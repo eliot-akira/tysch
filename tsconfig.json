@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "./build",
+    "paths": {},
+    "module": "commonjs",
+    "target": "es6",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "lib": ["dom", "es2015", "es2016", "es2017", "esnext"],
+    "jsx": "preserve",
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noEmitHelpers": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true
+  },
+  "allowJS": false,
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/node_modules/**", "src/test/**/*.ts"]
+}
