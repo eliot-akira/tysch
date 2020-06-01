@@ -16,7 +16,7 @@
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noEmitHelpers": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noImplicitThis": true

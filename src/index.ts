@@ -3,18 +3,20 @@ export * from './validate'
 // Adapted from https://github.com/sinclairzx81/typebox/
 
 /** Schema definition for validation, simplified JSON schema */
-export interface TSchema<T> extends TBase<T> {
+export interface TSchema {
+  static: any
   type?: TSchemaValidTypeName
   optional?: boolean
   enum?: TLiteralType[]
   pattern?: string
   minimum?: number
   maximum?: number
-  properties?: { [key: string]: TSchema<any> }
-  additionalProperties?: TSchema<any>
-  items?: TSchema<any>
-  anyOf?: TSchema<any>[]
-  allOf?: TSchema<any>[]
+  properties?: { [key: string]: TSchema }
+  additionalProperties?: TSchema
+  items?: TSchema
+  isStrict?: boolean
+  anyOf?: TSchema[]
+  allOf?: TSchema[]
 }
 
 export type TSchemaValidTypeName = 'null' | 'string' | 'number' | 'boolean' | 'array' | 'object' //  TODO: 'date'
@@ -45,10 +47,16 @@ function distinct(items: string[]): string[] {
   }, [])
 }
 
-export interface WithOptional { optional?: boolean }
+export interface WithOptional {
+  optional?: boolean
+}
+
+export interface WithIsStrict {
+  isStrict?: boolean
+}
 
 /** Type base */
-export interface TBase<T> extends WithOptional {
+export interface TBase<T> extends WithOptional, WithIsStrict {
   static: T
 }
 
@@ -234,7 +242,12 @@ class TypeBuilder {
 
   /** Schema for type 'object' with given property types */
   public object<T extends TObjectProperties>(properties: T = {} as T): TObject<T> {
-    return { type: 'object', properties } as TObject<T>
+    return { type: 'object', properties, isStrict: false } as TObject<T>
+  }
+
+  /** Schema for type 'object' with given property types and no extra properties */
+  public strictObject<T extends TObjectProperties>(properties: T = {} as T): TObject<T> {
+    return { type: 'object', properties, isStrict: true } as TObject<T>
   }
 
   /** Schema for type dictionary with string keys. Statically resolves to an TDictionary<T> */
@@ -244,7 +257,12 @@ class TypeBuilder {
 
   /** Schema for type array. Statically resolves to an Array<T> */
   public array<T extends TBase<any>>(type: T = undefined as any as T): TArray<T> {
-    return { type: 'array', items: type === undefined ? { } : type } as TArray<T>
+    return { type: 'array', items: type === undefined ? {} : type, isStrict: false } as TArray<T>
+  }
+
+  /** Schema for type array. Statically resolves to an Array<T> */
+  public strictArray<T extends TBase<any>>(type: T = undefined as any as T): TArray<T> {
+    return { type: 'array', items: type === undefined ? {} : type, isStrict: true } as TArray<T>
   }
 
   /** Schema for range of type 'number'  */
